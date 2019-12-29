@@ -1,18 +1,13 @@
 version: "3.5"
-volumes:
-  data:
-    driver_opts:
-      type: "nfs"
-      o: "addr=192.168.100.87,nolock,soft,rw"
-      device: ":/mnt/data/prometheus"
 services:
   software:
     image: prom/prometheus
     networks:
       - internal
-    environment:
-    volumes:
-      - data/prometheus.yml:/etc/prometheus/prometheus.yml
+    secrets:
+      - source: config
+        target: /etc/prometheus/prometheus.yml
+        mode: 0666
     deploy:
       labels:
         traefik.enable: "true"
@@ -20,11 +15,14 @@ services:
         traefik.frontend.passHostHeader: "true"
         traefik.frontend.headers.SSLRedirect: "true"
         traefik.docker.network: "internal"
-        traefik.port: 9090 
+        traefik.port: 9090
       placement:
         constraints:
           - node.role == worker
-      mode: global   
+      mode: global
+secrets:
+  config:
+    file: prometheus.yaml
 networks:
   internal:
     name: internal
