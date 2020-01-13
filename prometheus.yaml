@@ -20,16 +20,15 @@ rule_files:
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'prometheus'
-
+    static_configs:
+    - targets: ['localhost:9090']
+                    
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
-
-    static_configs:
-      - targets: ['localhost:9090']
-## new job
-  - job_name: 'docker'
-         # metrics_path defaults to '/metrics'
-         # scheme defaults to 'http'.
-
-    static_configs:
-      - targets: ['192.168.100.95:9323']
+  - job_name: 'cadvisor'
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    dns_sd_configs:
+    - names: ['tasks.cadvisor_software']
+      type: A
+      port: 8080
