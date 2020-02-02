@@ -1,0 +1,17 @@
+Setup programmatic access in AWS IAM
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "ec2:DescribeInstances",
+            "Resource": "*"
+        }
+    ]
+}
+
+
+Create the JSON policy above.
+
+This will allow Promtetheus to complete target discovery using AWSAPI

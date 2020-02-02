@@ -25,10 +25,28 @@ scrape_configs:
                     
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
-  - job_name: 'cadvisor'
-    metrics_path: '/metrics'
-    scrape_interval: 15s
+    #  Getting DNS from TASkS
+  - job_name: 'caadvisor'
     dns_sd_configs:
     - names: ['tasks.cadvisor_software']
       type: A
       port: 8080
+    # AWS API target discovery - check READ.ME file 
+  - job_name: 'node-exporter'
+    ec2_sd_configs:
+    - region: eu-central-1
+      access_key: 
+      secret_key: 
+      port: 9100
+      refresh_interval: 1m
+    relabel_configs:
+    - source_labels:
+      - '__meta_ec2_tag_Name'
+      target_label: 'instance'
+    - source_labels:
+      - '__meta_ec2_tag_customer'
+      target_label:  'customer'
+    - source_labels:
+      - '__meta_ec2_tag_role'
+      target_label:  'role'
+ 
